@@ -44,12 +44,6 @@ The config file template should support all current configuration options. If we
 * `['redis']['config']['pidfile']` - When daemonize is enabled this configures where Redis will write the pid file.
 * `['redis']['config']['rdbcompression']` - Whether or not to use LZF compression when dumping .rdb databases. [ yes, no ]
 * `['redis']['config']['timeout']` - Configures when Redis will timeout a idle client connection.
-* `['redis']['config']['vm']['enabled']`- Use Redis' virtual memory.
-* `['redis']['config']['vm']['max_memory']` - Limits the amount of memory available to Redis.
-* `['redis']['config']['vm']['max_threads']` - Maximum number of VM I/O threads running simultaneously.
-* `['redis']['config']['vm']['page_size']` - Configures the page size Redis uses when writing out swap files.
-* `['redis']['config']['vm']['pages']` - The total number of memory pages in a swap file.
-* `['redis']['config']['vm']['vm_swap_file']` - The Redis swapfile.
 
 ** The following configuration settings are only available in redis >= 2.1.12 -- http://redis.io/commands/slowlog **
 
@@ -78,14 +72,18 @@ The config file template should support all current configuration options. If we
 There are several recipes broken up into reusable pieces. For ease of use, we've also included wrappers that map the most common use.
 
 * `redis::_group` - Creates a group for Redis.
+* `redis::_sentinel_config` - Creates configuration directories and installs templatized sentinel.conf.
 * `redis::_server_config` - Creates configuration directories and installs templatized redis.conf.
 * `redis::_server_init` - Installs a templatized Redis sysv initscript.
+* `redis::_sentinel_init` - Installs a templatized Redis Sentinel sysv initscript.
 * `redis::_server_install_from_package` - Installs Redis through the chef package resource.
 * `redis::_server_install_from_package` - Downloads, compiles, and installs Redis from source.
 * `redis::_server_runit` - Installs templatized Redis runit configuration.
 * `redis::_server_service` - Configures Redis through the chef service resource.
+* `redis::_sentinel_service` - Configures Redis through the chef service resource.
 * `redis::_user` - Creates a user for Redis.
 * `redis::default` - The default recipe executes the redis::server_package recipe.
+* `redis::sentinel` - Sets up Sentinel monitoring. You MUST configure a source install in your attributes.
 * `redis::server` - The default recipe executes the redis::server_package recipe. This recipe is here for compatibility with other community Redis cookbooks.
 * `redis::server_package` - Uses the recipe crumbs in the Redis cookbook to manage a packaged Redis instance.
 * `redis::server_source` - Uses the recipe crumbs in the Redis cookbook to manage a source compiled Redis instance.
@@ -95,10 +93,12 @@ There are several recipes broken up into reusable pieces. For ease of use, we've
 Please feel free to add issues, and submit pull requests to our [github](https://github.com/CXInc/chef-redis)!
 
 # LICENSE & AUTHOR:
-Author:: Miah Johnson (<miah@cx.com>)
-Copyright:: 2012, CX, Inc
-Author:: Noah Kantrowitz (<nkantrowitz@crypticstudios.com>)
-Copyright:: 2010, Atari, Inc
+Author:: AJ Bourg (<aj@sendgrid.com>)  
+Copyright:: 2013, SendGrid, Inc  
+Author:: Miah Johnson (<miah@cx.com>)  
+Copyright:: 2012, CX, Inc  
+Author:: Noah Kantrowitz (<nkantrowitz@crypticstudios.com>)  
+Copyright:: 2010, Atari, Inc  
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
