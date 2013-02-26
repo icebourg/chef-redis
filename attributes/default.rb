@@ -19,7 +19,7 @@
 #
 
 # installation
-default['redis']['install_type'] = "package"
+default['redis']['install_type'] = "source"
 default['redis']['source']['sha'] = "ac420c9f01f5e1d4e977401936f8da81d2401e65c03de2e0ca11eba1cc71c874"
 default['redis']['source']['url'] = "http://redis.googlecode.com/files"
 default['redis']['source']['version'] = "2.4.9"
@@ -46,16 +46,19 @@ default['redis']['config']['loglevel'] = "warning"
 default['redis']['config']['pidfile'] = "/var/run/redis.pid"
 default['redis']['config']['rdbcompression'] = "yes"
 default['redis']['config']['timeout'] = "300"
-default['redis']['config']['vm']['enabled'] = "no"
-default['redis']['config']['vm']['max_memory'] = "0"
-default['redis']['config']['vm']['max_threads'] = "4"
-default['redis']['config']['vm']['page_size'] = "32"
-default['redis']['config']['vm']['pages'] = "134217728"
-default['redis']['config']['vm']['vm_swap_file'] = "/var/lib/redis/redis.swap"
 
 ###
 ## the following configuration settings may only work with a recent redis release
 ###
+
+default['redis']['config']['slave_serve_stale_data'] = "yes"
+default['redis']['config']['repl_ping_slave_period'] = 10
+default['redis']['config']['repl_timeout'] = 60
+default['redis']['config']['repl_disable_tcp_nodelay'] = "no"
+default['redis']['config']['slave_priority'] = 100
+default['redis']['config']['slave_read_only'] = "no"
+default['redis']['config']['maxclients'] = 128
+
 default['redis']['config']['configure_slowlog'] = false
 default['redis']['config']['slowlog_log_slower_than'] = "10000"
 default['redis']['config']['slowlog_max_len'] = "1024"
