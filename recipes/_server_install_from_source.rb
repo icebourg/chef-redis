@@ -19,7 +19,8 @@ execute "install-redis" do
   cwd node['redis']['src_dir']
   command "make PREFIX=#{node['redis']['dst_dir']} install"
   creates "#{node['redis']['dst_dir']}/bin/redis-server"
-  user node['redis']['user']
+  # running the install as the user it'll run as? WTF?
+  #user node['redis']['user']
   action :nothing
 end
 
