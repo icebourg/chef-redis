@@ -3,12 +3,18 @@
 # Simple Redis init.d script conceived to work on Linux systems
 # as it does use the /proc filesystem.
 
-REDISPORT=<%= node['redis']['config']['listen_port'] %>
-EXEC=<%= node['redis']['dst_dir'] %>/bin/redis-server
-CLIEXEC=<%= node['redis']['dst_dir'] %>/bin/redis-cli
+<% if @sentinel then %>
+SERVICE="Sentinel"
+<% else %>
+SERVICE="Server"
+<% end %>
 
-PIDFILE=<%= node['redis']['config']['pidfile'] %>
-CONF="<%= node['redis']['conf_dir'] %>/redis.conf"
+PIDFILE=<%= @pid_file %>
+CONF="<%= @conf_dir %>/<%= @conf_file %>"
+
+REDISPORT=<%= @listen_port %>
+EXEC="<%= @dst_dir %>/bin/redis-server $CONF<%= @options %>"
+CLIEXEC=<%= @dst_dir %>/bin/redis-cli
 
 case "$1" in
     start)
@@ -16,8 +22,8 @@ case "$1" in
         then
                 echo "$PIDFILE exists, process is already running or crashed"
         else
-                echo "Starting Redis server..."
-                $EXEC $CONF
+                echo "Starting Redis $SERVICE..."
+                $EXEC
         fi
         ;;
     stop)
@@ -27,13 +33,17 @@ case "$1" in
         else
                 PID=$(cat $PIDFILE)
                 echo "Stopping ..."
+				<% if @sentinel then %>
+				kill $PID
+				<% else %>
                 $CLIEXEC -p $REDISPORT shutdown
+				<% end %>
                 while [ -x /proc/${PID} ]
                 do
-                    echo "Waiting for Redis to shutdown ..."
+                    echo "Waiting for Redis $SERVICE to shutdown ..."
                     sleep 1
                 done
-                echo "Redis stopped"
+                echo "Redis $SERVICE stopped"
         fi
         ;;
     *)
